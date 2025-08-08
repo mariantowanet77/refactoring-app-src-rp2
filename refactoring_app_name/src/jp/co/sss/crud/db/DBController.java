@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,7 +21,7 @@ public class DBController {
 	/** インスタンス化を禁止 */
 	private DBController() {
 	}
-
+	
 	/**
 	 * 全ての社員情報を検索
 	 *
@@ -147,7 +148,7 @@ public class DBController {
 				System.out.print("\t");
 				System.out.print(resultSet.getString("birthday"));
 				System.out.print("\t");
-
+				
 				System.out.println(resultSet.getString("dept_name"));
 
 			}
@@ -169,7 +170,7 @@ public class DBController {
 	 * @throws SQLException           DB処理でエラーが発生した場合に送出
 	 * @throws IOException            入力処理でエラーが発生した場合に送出
 	 */
-	public static void findC(String deptId) throws ClassNotFoundException, SQLException, IOException {
+	public static void findC(int deptId) throws ClassNotFoundException, SQLException, IOException {
 
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
@@ -187,13 +188,15 @@ public class DBController {
 			preparedStatement = connection.prepareStatement(sql.toString());
 
 			// 検索条件となる値をバインド
-			preparedStatement.setString(1, deptId);
-
+			preparedStatement.setInt(1, deptId);
+			
+			System.out.println("実行SQL: " + sql.toString());
+			
 			// SQL文を実行
 			resultSet = preparedStatement.executeQuery();
 
 			if (!resultSet.isBeforeFirst()) {
-				System.out.println("該当者はいませんでした");
+				System.out.println("該当する社員は存在しません。");
 				return;
 			}
 
@@ -224,16 +227,9 @@ public class DBController {
 				System.out.print(resultSet.getString("birthday"));
 				System.out.print("\t");
 
-				String deptIdString = resultSet.getString("dept_id");
-				int deptId2 = Integer.parseInt(deptIdString);
-				if (deptId2 == 1) {
-					System.out.print("営業部");
-				} else if (deptId2 == 2) {
-					System.out.print("経理部");
-				} else if (gender == 3) {
-					System.out.print("総務部");
+				System.out.print(resultSet.getString("dept_name")); // 直接部署名を表示
+				System.out.print("\n");
 
-				}
 
 			}
 
@@ -272,8 +268,17 @@ public class DBController {
 			// 入力値をバインド
 			preparedStatement.setString(1, empName);
 			preparedStatement.setString(2, gender);
-			preparedStatement.setString(3, birthday);
-			preparedStatement.setString(4, deptId);
+			//preparedStatement.setString(3, birthday);
+			// 誕生日の文字列をDate型に変換（例: "1990-01-01" 形式）
+			// 入力が "1990/01/01" の場合に対応
+
+			Date sqlBirthday = Date.valueOf(birthday); 
+
+
+			preparedStatement.setDate(3, sqlBirthday);
+			
+			preparedStatement.setInt(4, Integer.parseInt(deptId));
+
 
 			// SQL文を実行
 			preparedStatement.executeUpdate();
@@ -323,8 +328,12 @@ public class DBController {
 			// 入力値をバインド
 			preparedStatement.setString(1, emp_name);
 			preparedStatement.setString(2, gender);
-			preparedStatement.setString(3, birthday);
-			preparedStatement.setString(4, deptId);
+			
+			Date sqlBirthday = Date.valueOf(birthday);
+			preparedStatement.setDate(3, sqlBirthday);
+			
+			preparedStatement.setInt(4, Integer.parseInt(deptId));
+			
 			preparedStatement.setString(5, empId);
 
 			// SQL文の実行(失敗時は戻り値0)

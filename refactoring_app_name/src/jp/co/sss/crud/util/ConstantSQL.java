@@ -46,9 +46,10 @@ public class ConstantSQL {
 			+ "ON e.dept_id = d.dept_id " + "ORDER BY e.emp_id";
 
 	/** 条件検索(ベース) */
-	public static final String SQL_SELECT_BASIC = "SELECT e.emp_id, e.emp_name,e.gender, TO_CHAR(birthday, 'yyyy/MM/dd') AS birthday, e.birthday, d.dept_name "
-			+ "FROM employee e INNER JOIN department d "
-			+ "ON e.dept_id = d.dept_id ";
+	public static final String SQL_SELECT_BASIC = "SELECT e.emp_id, e.emp_name, e.gender, TO_CHAR(birthday, 'yyyy/MM/dd') AS birthday, e.birthday, d.dept_name " 
+			+"FROM employee e " 
+			+"INNER JOIN department d ON e.dept_id = d.dept_id ";
+
 
 	/** 条件検索(社員名による条件) */
 	public static final String SQL_SELECT_BY_EMP_NAME = "WHERE e.emp_name LIKE ? ORDER BY e.emp_id";
@@ -57,7 +58,10 @@ public class ConstantSQL {
 	public static final String SQL_SELECT_BY_DEPT_ID = "WHERE e.dept_id = ? ORDER BY e.emp_id";
 
 	/** 登録 */
-	public static final String SQL_INSERT = "INSERT INTO employee VALUES(seq_emp.NEXTVAL, ?, ?, ?, ?)";
+	public static final String SQL_INSERT =
+		    "INSERT INTO employee (emp_id, emp_name, gender, birthday, dept_id) "
+		  + "VALUES (nextval('seq_emp'), ?, ?, ?, ?)";
+
 
 	/** 更新 */
 	public static final String SQL_UPDATE = "UPDATE employee SET emp_name = ?, gender = ?, "

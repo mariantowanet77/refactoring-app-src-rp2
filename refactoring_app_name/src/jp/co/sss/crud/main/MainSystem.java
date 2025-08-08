@@ -26,6 +26,8 @@ public class MainSystem {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
 		int menuNo = 0;
+		
+
 
 		do {
 			// メニューの表示
@@ -41,7 +43,12 @@ public class MainSystem {
 
 			// メニュー番号の入力
 			String menuNoStr = br.readLine();
-			menuNo = Integer.parseInt(menuNoStr);
+			 try {
+			        menuNo = Integer.parseInt(menuNoStr);
+			    } catch (NumberFormatException e) {
+			        System.out.println("1〜7の整数を入力してください。");
+			        continue; // メニューを再表示
+			    }
 
 			// 機能の呼出
 			switch (menuNo) {
@@ -61,8 +68,17 @@ public class MainSystem {
 			case 3:
 				// 検索する部署IDを入力
 				System.out.print("部署ID(1:営業部、2:経理部、3:総務部)を入力してください:");
-				String deptIdA = br.readLine();
+				String deptIdAStr = br.readLine();
 
+				int deptIdA;
+				try {
+				    deptIdA = Integer.parseInt(deptIdAStr);
+				} catch (NumberFormatException e) {
+				    System.out.println("部署IDは1〜3の数字で入力してください。");
+				    break; // switch文を抜けて、メニュー再表示
+				}
+				
+				
 				// 検索機能の呼出
 				DBController.findC(deptIdA);
 				break;
@@ -103,10 +119,18 @@ public class MainSystem {
 				// 削除機能の呼出
 				DBController.delete();
 				break;
-
+			case 7:
+				//7の場合、システムを終了
+				System.out.println("システムを終了します。");
+				break;
+			default:
+		        // 1〜7以外の数字が入力された場合の処理
+		        System.out.println("システムエラーが発生しました。");
+		        System.out.println("システムを終了します");
+		        menuNo = 7;
 			}
+			
 		} while (menuNo != 7);
-		System.out.println("システムを終了します。");
-		System.out.println("システムを終了します。");
+		//System.out.println("もう一度やり直してください。");
 	}
 }
