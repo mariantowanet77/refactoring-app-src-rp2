@@ -107,5 +107,6 @@ public class MainSystem {
 			}
 		} while (menuNo != 7);
 		System.out.println("システムを終了します。");
+		System.out.println("システムを終了します。");
 	}
 }
